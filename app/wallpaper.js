@@ -8,8 +8,8 @@ import { FAB } from 'react-native-paper';
 export default function MyWallpapers() {
   
   const defaultWallpapers = [
-    { id: '1', src: require('../../assets/images/1.jpg') },
-    { id: '2', src: require('../../assets/images/1.jpg') },
+    { id: '1', src: require('../assets/images/1.jpg') },
+    { id: '2', src: require('../assets/images/1.jpg') },
     // Uncomment and add more wallpapers if needed
     // { id: '3', src: require('../../assets/images/3.jpg') },
   ];
@@ -71,7 +71,75 @@ export default function MyWallpapers() {
 
   return (
     <View style={styles.container}>
-     <Text>My Wallpapers coming soon</Text>
+      <FlatList
+        data={wallpapers}
+        keyExtractor={(item) => item.id}
+        numColumns={2}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => handleSelectWallpaper(item)} style={styles.imageContainer}>
+            <Image source={item.src} style={styles.image} />
+          </TouchableOpacity>
+        )}
+      />
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(!modalVisible)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Options</Text>
+            <Button title="Download Image" onPress={handleDownloadImage} />
+            <Button title="Share Image" onPress={handleShareImage} />
+            <Button title="Cancel" onPress={() => setModalVisible(false)} color="red" />
+          </View>
+        </View>
+      </Modal>
+
+      <FAB
+        style={styles.fab}
+        icon="plus"
+        onPress={() => //setFabVisible(true)}
+        router.push('../Canvas')
+        }
+      />
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={fabVisible}
+        onRequestClose={() => setFabVisible(!fabVisible)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Enter Book, Chapter, Verse</Text>
+            <TextInput
+              placeholder="Book"
+              value={book}
+              onChangeText={setBook}
+              style={styles.input}
+            />
+            <TextInput
+              placeholder="Chapter"
+              value={chapter}
+              onChangeText={setChapter}
+              style={styles.input}
+            />
+            <TextInput
+              placeholder="Verse"
+              value={verse}
+              onChangeText={setVerse}
+              style={styles.input}
+            />
+            <Button title="Fetch Scripture" onPress={handleFetchScripture} />
+            {loading && <ActivityIndicator size="large" color="#0000ff" />}
+            {scripture && <Text style={styles.scriptureText}>{scripture}</Text>}
+            <Button title="Close" onPress={() => setFabVisible(false)} color="red" />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -79,8 +147,6 @@ export default function MyWallpapers() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignContent : 'center',
     paddingVertical: 20,
     paddingHorizontal: 10,
   },
